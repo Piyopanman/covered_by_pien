@@ -1,5 +1,6 @@
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -49,75 +50,74 @@ class DetectFaceDemo {
 //    	System.out.println(facesArray[i].x);
 //    }
 
-    //どれにぴえんをつけるか入力を待つ
+
     Scanner sc = new Scanner(System.in);
     boolean continueFlag = true;
-    ArrayList<Integer> pienRegisterList = new ArrayList<Integer>();
+    Set<Integer> pienRegisterSet = new HashSet<Integer>();
 
     while(continueFlag) {
-        System.out.print("左から何番目の人にぴえんをつけますか？: ");
         String n;
-        String yOrN;
-
+        String YorN;
+        System.out.print("左から何番目の人にぴえんをつけますか？: ");
+        //何番目にぴえんをつけるか
         n = sc.next();
-        //入力された値がintかどうかを判定
-        boolean intFlag = true;
-        for(int i=0 ; i<n.length() ; i++) {
-        	if(Character.isDigit(n.charAt(i))) {
-        		continue;
-        	}else {
-        		intFlag = false;
-        		break;
-        	}
-        }
-        if(intFlag) {
+        if(isInt(n)) {
         	int nn = Integer.parseInt(n);
         	if(nn > size) {
         		System.out.println("【エラー】数値 " + n + " は指定できません。0から" + size + "の間で指定してください。");
         		continue;
         	}
-        	pienRegisterList.add(nn);
-        	boolean yOrNFlag  =true;
-        	while(yOrNFlag) {
+        	pienRegisterSet.add(nn);
+        	boolean YorNFlag  =true;
+        	while(YorNFlag) {
         		System.out.print("他の人にもぴえんをつけますか？ [yes/no]: ");
-        		yOrN = sc.next();
-        		if(yOrN.equals("yes")) {
-        			yOrNFlag = false;
-        		}else if(yOrN.equals("no")) {
-        			yOrNFlag = false;
+        		YorN = sc.next();
+        		if(YorN.equals("yes")) {
+        			YorNFlag = false;
+        		}else if(YorN.equals("no")) {
+        			YorNFlag = false;
         			continueFlag = false;
         		}else {
         			System.out.println("【エラー】yes か no で入力してください。");
         		}
         	}
-
         }else {
         	System.out.println("【エラー】int型の数値を入力してください");
         }
-
-
     }
-
 
     sc.close();
 
+    //取得した顔に四角をつける
     for (Rect rect : faceDetections.toArray()) {
         Imgproc.rectangle(image, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(0, 255, 0));
     }
 
-
-
-
-
-    // Save the visualized detection.
+    // ファイルの生成
     String filename = "faceDetection.png";
     System.out.println(String.format("ファイル %s を生成しました。", filename));
     Imgcodecs.imwrite(filename, image);
   }
+
+  //入力された値がintかどうかを判定するメソッド
+  private boolean isInt(String n) {
+	  boolean intFlag = true;
+      for(int i=0 ; i<n.length() ; i++) {
+      	if(Character.isDigit(n.charAt(i))) {
+      		continue;
+      	}else {
+      		intFlag = false;
+      		break;
+      	}
+      }
+      return intFlag;
+  }
+
+
+
 }
 public class HelloOpenCV {
   public static void main(String[] args) {
-    // System.out.println("Hello, OpenCV");
     // Load the native library.
     System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
     new DetectFaceDemo().run();
