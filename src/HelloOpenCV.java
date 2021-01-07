@@ -1,11 +1,12 @@
+import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
-import org.opencv.core.Point;
 import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 //
 // Detects faces in an image, draws boxes around them, and writes the results
@@ -13,7 +14,7 @@ import org.opencv.objdetect.CascadeClassifier;
 //
 class DetectFaceDemo {
   public void run() {
-    System.out.println("\nRunning DetectFaceDemo");
+//    System.out.println("\nRunning DetectFaceDemo");
     // Create a face detector from the cascade file in the resources
     // directory.
     CascadeClassifier faceDetector = new CascadeClassifier(getClass().getResource("/haarcascade_frontalface_alt.xml").getPath());
@@ -23,21 +24,14 @@ class DetectFaceDemo {
     MatOfRect faceDetections = new MatOfRect();
     faceDetector.detectMultiScale(image, faceDetections);
     System.out.println(String.format("%sつの顔を取得しました。", faceDetections.toArray().length));
-    // Draw a bounding box around each face.
-    for (Rect rect : faceDetections.toArray()) {
-//    	System.out.println(rect.x);
-        Imgproc.rectangle(image, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(0, 255, 0));
-    }
 
+    //x座標順に並び替え
     int size = faceDetections.toArray().length;
-
     Rect[] test = new Rect[size];
     for(int i=0 ; i<size ; i++) {
     	test[i] = faceDetections.toArray()[i];
-//    	System.out.println(test[i]);
     }
 
-    //ソート
     for(int i=0 ; i<size ; i++) {
     	int j = i;
     	while(j>0 && test[j-1].x > test[j].x) {
@@ -48,9 +42,30 @@ class DetectFaceDemo {
     	}
     }
 
-    for(int i=0 ; i<size ; i++) {
-    	System.out.println(test[i].x);
+//    for(int i=0 ; i<size ; i++) {
+//    	System.out.println(test[i].x);
+//    }
+
+    Scanner sc = new Scanner(System.in);
+    boolean flag = true;
+    ArrayList<Integer> pienRegisterList = new ArrayList<Integer>();
+
+    while(flag) {
+        System.out.print("左から何番目の人にぴえんをつけますか？: ");
+        int n;
+        try {
+            n = sc.nextInt();
+		} catch (InputMismatchException e) {
+			System.out.println("数値を入力してください");
+			continue;
+		}
+//        Integer N = new Integer(n);
+        pienRegisterList.add(n);
+
     }
+
+
+
 
 
     // Save the visualized detection.
