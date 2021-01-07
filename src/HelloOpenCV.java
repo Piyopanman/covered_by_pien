@@ -21,7 +21,7 @@ class DetectFaceDemo {
     // Create a face detector from the cascade file in the resources
     // directory.
     CascadeClassifier faceDetector = new CascadeClassifier(getClass().getResource("/haarcascade_frontalface_alt.xml").getPath());
-    Mat image = Imgcodecs.imread(getClass().getResource("/hiyoko.png").getPath());
+    Mat image = Imgcodecs.imread(getClass().getResource("/three.jpeg").getPath());
     // ファイルから顔を認識する
     MatOfRect faceDetections = new MatOfRect();
     faceDetector.detectMultiScale(image, faceDetections);
@@ -63,8 +63,8 @@ class DetectFaceDemo {
             n = sc.next();
             if(isInt(n)) {
             	int nn = Integer.parseInt(n);
-            	if(nn > size) {
-            		System.out.println("【エラー】数値 " + n + " は指定できません。0から" + size + "の間で指定してください。");
+            	if(nn > size || nn < 1) {
+            		System.out.println("【エラー】数値 " + n + " は指定できません。1から" + size + "の間で指定してください。");
             		continue;
             	}
             	pienRegisterSet.add(nn);
