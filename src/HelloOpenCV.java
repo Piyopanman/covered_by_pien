@@ -16,12 +16,23 @@ import org.opencv.objdetect.CascadeClassifier;
 // to "faceDetection.png".
 //
 class DetectFaceDemo {
+	String inputFileName;
+	String outputFileName;
+	//コンストラクタ
+	public DetectFaceDemo(String inputFileName, String outputFileName) {
+		this.inputFileName = inputFileName;
+		this.outputFileName = outputFileName;
+	}
+
   public void run() {
-//    System.out.println("\nRunning DetectFaceDemo");
-    // Create a face detector from the cascade file in the resources
-    // directory.
     CascadeClassifier faceDetector = new CascadeClassifier(getClass().getResource("/haarcascade_frontalface_alt.xml").getPath());
-    Mat image = Imgcodecs.imread(getClass().getResource("/three.jpeg").getPath());
+    Mat image = null;
+    try {
+        image = Imgcodecs.imread(getClass().getResource(inputFileName).getPath());
+	} catch (NullPointerException e) {
+		System.out.println("ファイル: " + inputFileName + " が見つかりません。やり直してください。");
+		System.exit(1);
+	}
     // ファイルから顔を認識する
     MatOfRect faceDetections = new MatOfRect();
     faceDetector.detectMultiScale(image, faceDetections);
@@ -99,9 +110,9 @@ class DetectFaceDemo {
 //        }
 
         // ファイルの生成
-        String filename = "faceDetection.png";
-        System.out.println(String.format("ファイル %s を生成しました。", filename));
-        Imgcodecs.imwrite(filename, image);
+        System.out.println(String.format("ファイル %s を生成しました。", outputFileName));
+        Imgcodecs.imwrite(outputFileName, image);
+
       }
     }
 
@@ -123,8 +134,14 @@ class DetectFaceDemo {
 }
 public class HelloOpenCV {
   public static void main(String[] args) {
-    // Load the native library.
+	Scanner sc = new Scanner(System.in);
     System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-    new DetectFaceDemo().run();
+    System.out.print("顔を検出したいファイル名を入力してください: ");
+    String inputFileName = sc.next();
+    System.out.print("出力するファイル名を入力してください: ");
+    String outputFileName = sc.next();
+    DetectFaceDemo dfd = new DetectFaceDemo(inputFileName, outputFileName);
+    dfd.run();
+    sc.close();
   }
 }
