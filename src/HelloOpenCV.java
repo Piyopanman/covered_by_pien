@@ -104,11 +104,6 @@ class DetectFaceDemo {
             Imgproc.rectangle(image, new Point(facesArray[n-1].x, facesArray[n-1].y), new Point(facesArray[n-1].x + facesArray[n-1].width, facesArray[n-1].y +facesArray[n-1].height), new Scalar(0, 255, 0));
         }
 
-        //取得した顔に四角をつける
-//        for (Rect rect : faceDetections.toArray()) {
-//            Imgproc.rectangle(image, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(0, 255, 0));
-//        }
-
         // ファイルの生成
         System.out.println(String.format("ファイル %s を生成しました。", outputFileName));
         Imgcodecs.imwrite(outputFileName, image);
